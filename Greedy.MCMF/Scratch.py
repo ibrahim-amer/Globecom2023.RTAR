@@ -1,0 +1,2 @@
+class Scratch(object):
+    pass
