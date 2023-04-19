@@ -1,5 +1,5 @@
-function [dataObj] = PBTA_init_dataObj_sim(N, M)
-%This function initialize dataObj for PBTA simulation
+function [dataObj] = RTAR_init_dataObj_sim(N, M)
+%This function initialize dataObj for RTAR simulation
 
 dataObj = struct();
 dataObj.N = N;

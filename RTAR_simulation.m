@@ -1,5 +1,5 @@
 
-function [allResults] = PBTA_simulation(N_min, N_max, N_stepSize, M_min, M_max, M_stepSize, number_of_simulations, dataObj, checkConstraints)
+function [allResults] = RTAR_simulation(N_min, N_max, N_stepSize, M_min, M_max, M_stepSize, number_of_simulations, dataObj, checkConstraints)
 %%
 arguments
     N_min (1, 1) double = 2
@@ -29,7 +29,7 @@ end
     %%Preparing data
     dataObj.N = N_max;
     dataObj.M = M_max;
-    dataObj = PBTA_prepare_data(dataObj);
+    dataObj = RTAR_prepare_data(dataObj);
     allow_debug = true;
     if (~isfield(dataObj, 'run_MCMF'))
         dataObj.run_MCMF = true;
@@ -46,16 +46,15 @@ end
             simulation = struct();
             simulation.all_sims = cell(1, number_of_simulations);
             simulation.stats = struct();
-            temp_dataObj = PBTA_slice_data(N, M, dataObj);
+            temp_dataObj = RTAR_slice_data(N, M, dataObj);
                        
            
             simulation.stats.averageOptimalVal = double(0);
             simulation.stats.averageRuntime = double(0);
             
-            simulation.rep_sw.stats.averageRuntime = double(0);
-            simulation.rep_kw.stats.averageRuntime = double(0);
+            
             for sim = 1:number_of_simulations
-                simulation.all_sims{sim}.optimal_solution = PBTA_ILP_solution_Gurobi(temp_dataObj, checkConstraints, allow_debug);                disp('RepMax_Rep_KW_scheme finished!');
+                simulation.all_sims{sim}.optimal_solution = RTAR_ILP_solution_Gurobi(temp_dataObj, checkConstraints, allow_debug);                disp('RepMax_Rep_KW_scheme finished!');
                 simulation.stats.total_number_of_allocated_workers = simulation.all_sims{sim}.optimal_solution.stats.total_number_of_allocated_workers;
                 if (strcmp(simulation.all_sims{sim}.optimal_solution.status, 'OPTIMAL') || strcmp(simulation.all_sims{sim}.optimal_solution.status, 'INTERRUPTED'))
                     simulation.stats.averageOptimalVal = simulation.stats.averageOptimalVal + simulation.all_sims{sim}.optimal_solution.optimalVal;
@@ -64,8 +63,10 @@ end
                     simulation.stats.averageOptimalVal = simulation.stats.averageOptimalVal + 0;
                     simulation.stats.averageRuntime = simulation.stats.averageRuntime + 0;
                 end
-                 if (dataObj.run_MCMF)
-                    simulation.all_sims{sim}.MCMF_result = MCMF_py(temp_dataObj);
+                 if (dataObj.run_heuristic)
+                    simulation.all_sims{sim}.RTAR_H = struct();
+                    simulation.all_sims{sim}.RTAR_H.X = heuristic_py(temp_dataObj);
+                    simulation.all_sims{sim}.RTAR_H.X = double(simulation.all_sims{sim}.RTAR_H.X)';
                  end
             end
             if (strcmp(simulation.all_sims{sim}.optimal_solution.status, 'OPTIMAL') || strcmp(simulation.all_sims{sim}.optimal_solution.status, 'INTERRUPTED'))

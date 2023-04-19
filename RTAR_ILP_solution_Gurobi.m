@@ -1,5 +1,5 @@
-function result = PBTA_ILP_solution_Gurobi(dataObj, checkConstraints, allow_debug)
-    fprintf('#####[PBTA_ILP_Solution_Gurobi_Globecom_Extension] started!. N = %d, M = %d#####\n', dataObj.N, dataObj.M);
+function result = RTAR_ILP_solution_Gurobi(dataObj, checkConstraints, allow_debug)
+    fprintf('#####[RTAR_ILP_Solution_Gurobi_Globecom''23] started!. N = %d, M = %d#####\n', dataObj.N, dataObj.M);
     %% Problem solution
     decVars = cell(1, dataObj.numOfVars);
     c1 = 1;
@@ -140,5 +140,5 @@ function result = PBTA_ILP_solution_Gurobi(dataObj, checkConstraints, allow_debu
         result.allConstraints = [];    
         result.status = 'INFEASIBLE';
     end
-    fprintf('#####[PBTA_ILP_Solution_Gurobi_Globecom_Extension] finished!. N = %d, M = %d#####\n', dataObj.N, dataObj.M);
+    fprintf('#####[RTAR_ILP_Solution_Gurobi_Globecom''23] finished!. N = %d, M = %d#####\n', dataObj.N, dataObj.M);
 end

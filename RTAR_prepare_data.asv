@@ -1,8 +1,5 @@
 function [dataObj] = RTAR_prepare_data(dataObj)
     dataObj.numOfVars = dataObj.N .* dataObj.M;
-    if (~isfield(dataObj, 'run_heuristic'))
-        dataObj.run_heuristic = true;
-    end
     if (~isfield(dataObj, 'con_b_enabled'))
         dataObj.con_b_enabled = true;
     end
@@ -25,26 +22,16 @@ function [dataObj] = RTAR_prepare_data(dataObj)
         dataObj.con_g_enabled = true;
     end
     if (~isfield(dataObj, 'MCMF_constraints_enabled'))
-        dataObj.MCMF_constraints_enabled = true;
+        dataObj.MCMF_constraints_enabled = 1;
     end
     if (~isfield(dataObj, 'budget_con_enabled'))
-        dataObj.budget_con_enabled = true;
+        dataObj.budget_con_enabled = 1;
     end
     if (~isfield(dataObj, 'fitness_norm_factor_min'))
         dataObj.fitness_norm_factor_min = 1;
     end
     if (~isfield(dataObj, 'fitness_norm_factor_max'))
         dataObj.fitness_norm_factor_max = 100;
-    end
-    
-    if (~isfield(dataObj, 'con_b_enabled_aux'))
-        dataObj.con_b_enabled_aux = true;
-    end
-    if (~isfield(dataObj, 'con_c_enabled_aux'))
-        dataObj.con_c_enabled_aux = true;
-    end
-    if (~isfield(dataObj, 'con_e_enabled_aux'))
-        dataObj.con_e_enabled_aux = true;
     end
     %% Problem formulation and system model can be found here: 
     % https://skillful-honesty-f66.notion.site/Meeting-Preparation-March-23-2022-b7f0da29e5694554ba0f07d0acefe679
@@ -401,63 +388,40 @@ function [dataObj] = RTAR_prepare_data(dataObj)
     dataObj.b = [];
     dataObj.operators = [];
     
-    
-    if (dataObj.con_b_enabled_aux)
-        dataObj.con_b_aux = zeros(dataObj.N * dataObj.M, dataObj.numOfVars);
-        for i = 1:dataObj.N * dataObj.M
-            row = zeros(1, dataObj.numOfVars);
-            row(i) = 1 .* dataObj.tasks_total_delays(i);
-            dataObj.con_b_aux(i, :) = row;
-        end
-        dataObj.con_b_bounds_aux = zeros(dataObj.N * dataObj.M, 1);
-        ctr = 1;
-        for i = 1:dataObj.N
-            for j = 1:dataObj.M
-                dataObj.con_b_bounds_aux(ctr, :) = dataObj.tasks_deadlines(j);
-                ctr = ctr + 1;
-            end
-        end
-       
-        dataObj.con_b_size_aux = size(dataObj.con_b_aux, 1); %N * M
-    end
-    
-     %% Constraint (e) t(w_i, \gamma_j)\lambda_{ij} \leq \gamma^{\text{deadline}}_j (e)
-    if (dataObj.con_e_enabled_aux)
-        dataObj.con_e_aux = zeros(dataObj.N * dataObj.M, dataObj.numOfVars);
-        for i = 1:dataObj.N * dataObj.M
-            row = zeros(1, dataObj.numOfVars);
-            row(i) = 1 .* dataObj.tasks_execution_times(i);
-            dataObj.con_e_aux(i, :) = row;
-        end
-        dataObj.con_e_bounds_aux = zeros(dataObj.N * dataObj.M, 1);
-        ctr = 1;
-        for i = 1:dataObj.N
-            for j = 1:dataObj.M
-                dataObj.con_e_bounds_aux(ctr, :) = dataObj.tasks_deadlines(j);
-                ctr = ctr + 1;
-            end
-        end
-        
-        dataObj.con_e_size_aux = size(dataObj.con_e_aux, 1); %N * M
-    end
         
     
     
-    %% Constraint (b) \sum^N_{i=1}\lambda_{ij}w^{\text{pay}}_i  \leq  \gamma^{\text{budget}}_j
+    %% Constraint (b) \tau^{\text{comp}}_{ij} x_{ij} <=  t^{\text{deadline}}_j (b)
     if (dataObj.con_b_enabled)
         dataObj.con_b = zeros(dataObj.M, dataObj.numOfVars);
-        dataObj.con_b_bounds = zeros(dataObj.M, 1);
+        dataObj.con_b_bounds = zeros(dataObj.M, dataObj.numOfVars);
         for j = 1:dataObj.M
             row = zeros(1, dataObj.numOfVars);
             for i = 0:dataObj.N - 1
                 idx = (i .* dataObj.M) + j;
-                row(idx) = dataObj.workers_fitness_costs(i + 1);
+                row(idx) = 
             end
-            dataObj.con_b(j, :) = row;
-            dataObj.con_b_bounds(j) = dataObj.tasks_budgets(j);
+            for ij = j:dataObj.M:dataObj.N .* dataObj.M
+                row(ij) = 1;
+            end
+            con_b(j, :) = row;
         end
         
         
+        
+        for i = 1:dataObj.N * dataObj.M
+            row = zeros(1, dataObj.numOfVars);
+            row(i) = 1 .* dataObj.tasks_total_delays(i);
+            dataObj.con_b(i, :) = row;
+        end
+        dataObj.con_b_bounds = zeros(dataObj.N * dataObj.M, 1);
+        ctr = 1;
+        for i = 1:dataObj.N
+            for j = 1:dataObj.M
+                dataObj.con_b_bounds(ctr, :) = dataObj.tasks_deadlines(j);
+                ctr = ctr + 1;
+            end
+        end
         dataObj.A = [dataObj.A; dataObj.con_b];
         dataObj.b = [dataObj.b; dataObj.con_b_bounds];
         dataObj.operators = [dataObj.operators repmat('<', 1, size(dataObj.con_b, 1))];
@@ -481,6 +445,155 @@ function [dataObj] = RTAR_prepare_data(dataObj)
         dataObj.operators = [dataObj.operators repmat('<', 1, size(dataObj.con_d, 1))];
         dataObj.con_d_size = size(dataObj.con_d, 1);% N
     end
+    
+    %% Constraint (e) t(w_i, \gamma_j)\lambda_{ij} \leq \gamma^{\text{deadline}}_j (e)
+    if (dataObj.con_e_enabled)
+        dataObj.con_e = zeros(dataObj.N * dataObj.M, dataObj.numOfVars);
+        for i = 1:dataObj.N * dataObj.M
+            row = zeros(1, dataObj.numOfVars);
+            row(i) = 1 .* dataObj.tasks_execution_times(i);
+            dataObj.con_e(i, :) = row;
+        end
+        dataObj.con_e_bounds = zeros(dataObj.N * dataObj.M, 1);
+        ctr = 1;
+        for i = 1:dataObj.N
+            for j = 1:dataObj.M
+                dataObj.con_e_bounds(ctr, :) = dataObj.tasks_deadlines(j);
+                ctr = ctr + 1;
+            end
+        end
+        dataObj.A = [dataObj.A; dataObj.con_e];
+        dataObj.b = [dataObj.b; dataObj.con_e_bounds];
+        dataObj.operators = [dataObj.operators repmat('<', 1, size(dataObj.con_e, 1))];
+        dataObj.con_e_size = size(dataObj.con_e, 1); %N * M
+    end
+    
+    %% Constraint (f) \sum^{M}_{j=1}\lambda_{ij} - \frac{N}{M}\gamma^{\text{priority}}_j \leq 0
+    if (dataObj.con_f_enabled)
+        dataObj.con_f = zeros(dataObj.M, dataObj.numOfVars);
+        for j = 1:dataObj.M
+            row = zeros(1, dataObj.numOfVars);
+            for i = 0:dataObj.N - 1
+                idx = (i .* dataObj.M) + j;
+                row(1, idx) = 1;
+            end
+            dataObj.con_f(j, :) = row;
+        end
+
+        dataObj.con_f_bounds = zeros(dataObj.M, 1);
+        for j = 1:dataObj.M
+            dataObj.con_f_bounds(j, :) = (dataObj.N ./ dataObj.M) .* dataObj.tasks_priorities(j);
+        end
+        dataObj.A = [dataObj.A; dataObj.con_f];
+        dataObj.b = [dataObj.b; dataObj.con_f_bounds];
+        dataObj.operators = [dataObj.operators repmat('<', 1, size(dataObj.con_f, 1))];
+        dataObj.con_f_size = size(dataObj.con_f, 1); %N * M
+    end
+    
+    %% Constraint (2f) \sum^{M}_{j=1}\lambda_{ij} - \frac{N}{M}\gamma^{\text{priority}}_j \leq 0
+    if (dataObj.con_2f_enabled)
+        dataObj.con_2f = zeros(dataObj.M, dataObj.numOfVars);
+        for j = 1:dataObj.M
+            row = zeros(1, dataObj.numOfVars);
+            for i = 0:dataObj.N - 1
+                idx = (i .* dataObj.M) + j;
+                row(1, idx) = -1;
+            end
+            dataObj.con_2f(j, :) = row;
+        end
+
+        dataObj.con_2f_bounds = zeros(dataObj.M, 1);
+        dataObj.A = [dataObj.A; dataObj.con_2f];
+        dataObj.b = [dataObj.b; dataObj.con_2f_bounds];
+        dataObj.operators = [dataObj.operators repmat('<', 1, size(dataObj.con_2f, 1))];
+        dataObj.con_2f_size = size(dataObj.con_2f, 1); %N * M
+    end
+    
+    %% Constraint (g) \sum^{N}_{i=1} \sum^{M}_{j=1}\lambda_{ij} \geq\frac{N}{M}
+    if (dataObj.con_g_enabled)
+        dataObj.con_g = ones(1, dataObj.numOfVars);
+        dataObj.con_g_bounds = sum(dataObj.workers_max_tasks, 'all');
+        dataObj.A = [dataObj.A; dataObj.con_g];
+        dataObj.b = [dataObj.b; dataObj.con_g_bounds];
+        dataObj.operators = [dataObj.operators repmat('<', 1, size(dataObj.con_g, 1))];
+        dataObj.con_g_size = size(dataObj.con_g, 1); %N * M
+
+        dataObj.con_2g = ones(1, dataObj.numOfVars) .* -1;
+        dataObj.con_2g_bounds = 0;
+        dataObj.A = [dataObj.A; dataObj.con_2g];
+        dataObj.b = [dataObj.b; dataObj.con_2g_bounds];
+        dataObj.operators = [dataObj.operators repmat('<', 1, size(dataObj.con_2g, 1))];
+        dataObj.con_2g_size = size(dataObj.con_2g, 1); %N * M
+    end
+    
+    %% Budget constraint: \sum^N_{i=1}\lambda_{ij}\;Q(f(w_i))\leq L( \gamma^{\text{priority}}_j)
+    if (dataObj.budget_con_enabled)
+        dataObj.budget_con = zeros(dataObj.priority_levels, dataObj.numOfVars);
+        dataObj.budget_con_bounds = zeros(dataObj.priority_levels, 1);
+        for k=1:dataObj.priority_levels
+            %If there is no task with priority level 'k' in the tasks'
+            %list, then continue
+            if (length(find(dataObj.tasks_priorities == k)) == 0)
+                continue;
+            end
+            row = zeros(1, dataObj.numOfVars);
+            tasks_p_k_level = dataObj.G_func_tasks_p_level(dataObj.tasks_priorities, k);
+            
+            for j = 1:length(tasks_p_k_level)
+                for i = 0:dataObj.N - 1
+                    idx = (i .* dataObj.M) + tasks_p_k_level(j);
+                    row(1, idx) = dataObj.workers_fitness_costs(i + 1);
+                end
+            end
+            dataObj.budget_con(k, :) = row;
+            dataObj.budget_con_bounds(k) = dataObj.B_func_p_budget(dataObj.alpha_for_p_budget, k);
+%             dataObj.tasks_budgets(tasks_p_k_level) = dataObj.B_func_p_budget(dataObj.alpha_for_p_budget, k)...
+%                                                         ./ length(tasks_p_k_level);
+%             if (dataObj.tasks_budgets(tasks_p_k_level) < min(dataObj.workers_fitness_costs))
+%                 num_of_tasks_with_budget_equal_min_cost = ceil(dataObj.B_func_p_budget(dataObj.alpha_for_p_budget, k)...
+%                                                        ./ min(dataObj.workers_fitness_costs));
+%                 dataObj.tasks_budgets(tasks_p_k_level(1:num_of_tasks_with_budget_equal_min_cost)) = ...
+%                                                         min(dataObj.workers_fitness_costs);
+%                 dataObj.tasks_budgets(tasks_p_k_level(num_of_tasks_with_budget_equal_min_cost + 1:end)) = 0;                                   
+%             end
+        end
+               
+        dataObj.A = [dataObj.A; dataObj.budget_con];
+        dataObj.b = [dataObj.b; dataObj.budget_con_bounds];
+        dataObj.operators = [dataObj.operators repmat('<', 1, size(dataObj.budget_con, 1))];
+        dataObj.budget_con_size = size(dataObj.budget_con, 1); %N * M
+        
+        sorted_workers_costs = sort(dataObj.workers_fitness_costs);
+        
+        for k=dataObj.priority_levels:-1:1
+            p_budget = dataObj.B_func_p_budget(dataObj.alpha_for_p_budget, k);
+            tasks_p_k_level = dataObj.G_func_tasks_p_level(dataObj.tasks_priorities, k);
+            
+            current_w_idx = 1;
+            dataObj.tasks_budgets(tasks_p_k_level) = p_budget;
+%             while p_budget > 0 && ~isempty(tasks_p_k_level) ...
+%                     && current_w_idx < length(sorted_workers_costs)
+%                 for t = 1:length(tasks_p_k_level)
+%                     if (current_w_idx > length(sorted_workers_costs))
+%                         break;
+%                     end
+%                     if (p_budget < sorted_workers_costs(current_w_idx) || p_budget <= 0)
+%                         dataObj.tasks_budgets(tasks_p_k_level(t)) = 0;
+%                     else
+%                         dataObj.tasks_budgets(tasks_p_k_level(t)) = dataObj.tasks_budget`s(tasks_p_k_level(t)) + sorted_workers_costs(current_w_idx);
+%                         p_budget = p_budget - sorted_workers_costs(current_w_idx);
+%                     end
+% 
+%                     current_w_idx = current_w_idx + 1;
+% %                     current_w_idx = mod(current_w_idx, dataObj.N + 1);
+% %                     if (current_w_idx == 0)
+% %                         current_w_idx = 1;
+% %                     end
+%                 end
+%             end
+            
+        end%priority level for
+    end%constraint's if
     
     %% Constraint (h) RHS
     
