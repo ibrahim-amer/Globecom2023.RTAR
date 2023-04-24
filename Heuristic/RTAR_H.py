@@ -1,4 +1,5 @@
 #https://towardsdatascience.com/the-deferred-acceptance-da-algorithm-utilised-in-school-choice-with-python-afc0fe892921
+#https://github.com/kyosek/deferred_acceptance_school_choice
 # Define a function to perform the deferred acceptance algorithm
 import numpy as np
 def deferred_acceptance(college_prefs, student_prefs):
