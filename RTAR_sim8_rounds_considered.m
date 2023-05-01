@@ -1,11 +1,11 @@
 %% This script renders a graph that compares PBTA, MCMF, RepMax, TRUE, PBTA-REPD and MCMF-REPD while varying the reputation of the workers and the number of tasks.
 %Preparing the data
-N_min = 10;
-N_max = 10;
+N_min = 100;
+N_max = 100;
 N_stepSize = 5;
 
-M_min = 4;
-M_max = 4;
+M_min = 50;
+M_max = 50;
 M_stepSize = 5;
 epochs = 10;
 
@@ -35,8 +35,8 @@ for n=1:N
         current_MCMF_dataObj = current_dataObj;
         
         %RepMax
-        %all_results{n, m}.repMax_result = RepMax_simulation(n_vector(n), n_vector(n), N_stepSize, m_vector(m), ...
-       % m_vector(m), M_stepSize, number_of_simulations, current_dataObj, checkConstraints);
+        all_results{n, m}.repMax_result = RepMax_simulation(n_vector(n), n_vector(n), N_stepSize, m_vector(m), ...
+       m_vector(m), M_stepSize, number_of_simulations, current_dataObj, checkConstraints);
 
         %TRUE
         if (enable_true_benchmark)
@@ -123,7 +123,7 @@ for n=1:N
                 RTAR_H_tasks_fail_prob = failed_nodes_global;
                 RTAR_H_workers_failed = RTAR_H_tasks_fail_prob';
                 RTAR_H_workers_failed = sum(RTAR_H_workers_failed, 2);
-                RTAR_H_actual_workers = PBTA_MCMF_x_num_of_tasks_per_worker - RTAR_H_workers_failed;
+                RTAR_H_actual_workers = RTAR_H_x_num_of_tasks_per_worker - RTAR_H_workers_failed;
                 RTAR_H_actual_workers(RTAR_H_actual_workers < 0) = 0;
                 RTAR_H_workers_failure_status = RTAR_H_actual_workers == 0;
                 RTAR_H_nodes_failed = sum(RTAR_H_tasks_fail_prob, 2);
@@ -143,7 +143,7 @@ for n=1:N
                 %MCMF_dataObj_temp = PBTA_prepare_data(current_MCMF_dataObj);%re-prepare the data with constraints
                 %Constraint b
                 if (current_dataObj.con_b_enabled_aux)
-                    con_b_result = dataObj_temp.con_b_aux * RTAR_x <= dataObj_temp.con_b_bounds_aux;
+                    con_b_result = current_dataObj.con_b_aux * RTAR_x <= current_dataObj.con_b_bounds_aux;
                     con_b_n_m_reshaped = reshape(con_b_result, [current_m, current_n])';
                     con_b_failed_nodes = sum(con_b_n_m_reshaped == 0, 2) > 0;
                     con_b_non_failed_nodes = ~con_b_failed_nodes;
@@ -151,14 +151,14 @@ for n=1:N
                 end
 %                 %Constraint c
 %                 if (current_dataObj.con_c_enabled_aux)
-%                     con_c_failed_nodes = dataObj_temp.con_c_aux * RTAR_x <= dataObj_temp.con_c_bounds_aux;
+%                     con_c_failed_nodes = current_dataObj.con_c_aux * RTAR_x <= current_dataObj.con_c_bounds_aux;
 %                     con_c_failed_nodes = sum(con_c_failed_nodes == 0, 2) > 0;
 %                     con_c_non_failed_nodes = ~con_c_failed_nodes;
 %                     RTAR_combined_constraints = and(RTAR_combined_constraints, con_c_non_failed_nodes);
 %                 end
                 %Constraint e
                 if (current_dataObj.con_e_enabled_aux)
-                    con_e_result = dataObj_temp.con_e_aux * RTAR_x <= dataObj_temp.con_e_bounds_aux;
+                    con_e_result = current_dataObj.con_e_aux * RTAR_x <= current_dataObj.con_e_bounds_aux;
                     con_e_n_m_reshaped = reshape(con_e_result, [current_m, current_n])';
                     con_e_failed_nodes = sum(con_e_n_m_reshaped == 0, 2) > 0;
                     con_e_non_failed_nodes = ~con_e_failed_nodes;
@@ -171,7 +171,7 @@ for n=1:N
                 %RTAR H constraints
                 %Constraint b
                 if (current_dataObj.con_b_enabled_aux)
-                    con_b_result = dataObj_temp.con_b_aux * RTAR_H_x <= dataObj_temp.con_b_bounds_aux;
+                    con_b_result = current_dataObj.con_b_aux * RTAR_H_x <= current_dataObj.con_b_bounds_aux;
                     con_b_n_m_reshaped = reshape(con_b_result, [current_m, current_n])';
                     con_b_failed_nodes = sum(con_b_n_m_reshaped == 0, 2) > 0;
                     con_b_non_failed_nodes = ~con_b_failed_nodes;
@@ -179,14 +179,14 @@ for n=1:N
                 end
 %                 %Constraint c
 %                 if (current_dataObj.con_c_enabled_aux)
-%                     con_c_failed_nodes = dataObj_temp.con_c_aux * RTAR_H_x <= dataObj_temp.con_c_bounds_aux;
+%                     con_c_failed_nodes = current_dataObj.con_c_aux * RTAR_H_x <= current_dataObj.con_c_bounds_aux;
 %                     con_c_failed_nodes = sum(con_c_failed_nodes == 0, 2) > 0;
 %                     con_c_non_failed_nodes = ~con_c_failed_nodes;
 %                     RTAR_H_combined_constraints = and(RTAR_combined_constraints, con_c_non_failed_nodes);
 %                 end
                 %Constraint e
                 if (current_dataObj.con_e_enabled_aux)
-                    con_e_result = dataObj_temp.con_e_aux * RTAR_H_x <= dataObj_temp.con_e_bounds_aux;
+                    con_e_result = current_dataObj.con_e_aux * RTAR_H_x <= current_dataObj.con_e_bounds_aux;
                     con_e_n_m_reshaped = reshape(con_e_result, [current_m, current_n])';
                     con_e_failed_nodes = sum(con_e_n_m_reshaped == 0, 2) > 0;
                     con_e_non_failed_nodes = ~con_e_failed_nodes;
@@ -249,8 +249,8 @@ for n=1:N
 end%workers' loop
 
 %Task drop rate graphs
-%rep_max_average_task_drop_rate = zeros(N, M);
-%rep_kw_average_task_drop_rate = zeros(N, M);
+rep_max_average_task_drop_rate = zeros(N, M);
+rep_kw_average_task_drop_rate = zeros(N, M);
 true_average_task_drop_rate = zeros(N, M);
 RTAR_average_task_drop_rate = zeros(N, M);
 RTAR_H_average_task_drop_rate = zeros(N, M);
@@ -258,8 +258,8 @@ RTAR_H_average_task_drop_rate = zeros(N, M);
 
 
 %Total recruitment cost graphs
-%RepMax_average_total_costs = zeros(N, M, 'double');
-%rep_kw_average_total_costs = zeros(N, M, 'double');
+RepMax_average_total_costs = zeros(N, M, 'double');
+rep_kw_average_total_costs = zeros(N, M, 'double');
 TRUE_average_total_costs = zeros(N, M, 'double');
 RTAR_average_total_costs = zeros(N, M, 'double');
 RTAR_H_average_total_costs = zeros(N, M, 'double');
@@ -284,34 +284,34 @@ for sim_count=1:number_of_simulations
                 current_m = all_results{n, m}.RTAR_result{1, 1}.dataObj.M;
                 current_n = all_results{n, m}.RTAR_result{1, 1}.dataObj.N;
                 current_dataObj = all_results{n, m}.RTAR_result{1, 1}.dataObj;
-                MCMF_current_dataObj = all_results{n, m}.RTAR_H_result{1, 1}.dataObj;
+                %MCMF_current_dataObj = all_results{n, m}.RTAR_H{1, 1}.dataObj;
 
 
                 %% Step 1: prepare decision vars
                 %% RepMax
-%                 rep_max_x = all_results{n, m}.repMax_result{1, 1}.repmax.all_sims{sim_count}.x;
-%                 rep_max_x = rep_max_x(1:(length(rep_max_x) - current_m));
-% 
-%                 rep_max_x_reshaped = reshape(rep_max_x, [current_m, current_n]);
-%                 rep_max_replicas = sum(rep_max_x_reshaped, 2);
-%                 
-%                 RepMax_average_num_replicas(n, m) = RepMax_average_num_replicas(n, m) + sum(rep_max_replicas);
-%                 
-%                 RepMax_tasks_workers_costs = rep_max_x_reshaped .* current_dataObj.workers_fitness_costs;
-%                 RepMax_current_total_cost = sum(RepMax_tasks_workers_costs, 'all');
+                rep_max_x = all_results{n, m}.repMax_result{1, 1}.repmax.all_sims{sim_count}.x;
+                rep_max_x = rep_max_x(1:(length(rep_max_x) - current_m));
+
+                rep_max_x_reshaped = reshape(rep_max_x, [current_m, current_n]);
+                rep_max_replicas = sum(rep_max_x_reshaped, 2);
                 
-                %% RepKW
-%                 rep_kw_x = all_results{n, m}.repMax_result{1, 1}.rep_kw.all_sims{sim_count}.x;
-%                 rep_kw_x = rep_kw_x(1:(length(rep_kw_x) - current_m));
-% 
-%                 rep_kw_x_reshaped = reshape(rep_kw_x, [current_m, current_n]);
-%                 rep_kw_replicas = sum(rep_kw_x_reshaped, 2);
-%                 
-%                 rep_kw_average_num_replicas(n, m) = rep_kw_average_num_replicas(n, m) + sum(rep_kw_replicas);
-%                 
-%                 rep_kw_tasks_workers_costs = rep_kw_x_reshaped .* current_dataObj.workers_fitness_costs;
-%                 rep_kw_current_total_cost = sum(rep_kw_tasks_workers_costs, 'all');
-%                 
+                RepMax_average_num_replicas(n, m) = RepMax_average_num_replicas(n, m) + sum(rep_max_replicas);
+                
+                RepMax_tasks_workers_costs = rep_max_x_reshaped .* current_dataObj.workers_fitness_costs;
+                RepMax_current_total_cost = sum(RepMax_tasks_workers_costs, 'all');
+                
+                % RepKW
+                rep_kw_x = all_results{n, m}.repMax_result{1, 1}.rep_kw.all_sims{sim_count}.x;
+                rep_kw_x = rep_kw_x(1:(length(rep_kw_x) - current_m));
+
+                rep_kw_x_reshaped = reshape(rep_kw_x, [current_m, current_n]);
+                rep_kw_replicas = sum(rep_kw_x_reshaped, 2);
+                
+                rep_kw_average_num_replicas(n, m) = rep_kw_average_num_replicas(n, m) + sum(rep_kw_replicas);
+                
+                rep_kw_tasks_workers_costs = rep_kw_x_reshaped .* current_dataObj.workers_fitness_costs;
+                rep_kw_current_total_cost = sum(rep_kw_tasks_workers_costs, 'all');
+                
 
 
                 %% True
@@ -339,7 +339,7 @@ for sim_count=1:number_of_simulations
 
 
                 %RTAR_H
-                RTAR_H_x = all_results{n, m}.RTAR_H_result{1, 1}.all_sims{sim_count}.RTAR_H.X;
+                RTAR_H_x = all_results{n, m}.RTAR_result{1, 1}.all_sims{sim_count}.RTAR_H.X;
                 RTAR_H_x_reshaped = reshape(RTAR_H_x, [current_m, current_n]);
                 RTAR_H_replicas = sum(RTAR_H_x_reshaped, 2);
                 
@@ -362,14 +362,14 @@ for sim_count=1:number_of_simulations
                
 
                 %% RepMax
-%                 rep_max_tasks_fail_prob = failed_nodes_global;
-%                 rep_max_nodes_failed = sum(rep_max_tasks_fail_prob, 2);
-%                 rep_max_actual_nodes = rep_max_replicas - rep_max_nodes_failed;
-%                 rep_max_actual_nodes(rep_max_actual_nodes < 0) = 0;
-%                 rep_max_status = rep_max_actual_nodes == 0;
-%                 rep_max_percentage = sum(rep_max_status) ./ current_m;
-% 
-%                 rep_max_average_task_drop_rate(n, m) = rep_max_average_task_drop_rate(n, m) + rep_max_percentage;
+                rep_max_tasks_fail_prob = failed_nodes_global;
+                rep_max_nodes_failed = sum(rep_max_tasks_fail_prob, 2);
+                rep_max_actual_nodes = rep_max_replicas - rep_max_nodes_failed;
+                rep_max_actual_nodes(rep_max_actual_nodes < 0) = 0;
+                rep_max_status = rep_max_actual_nodes == 0;
+                rep_max_percentage = sum(rep_max_status) ./ current_m;
+
+                rep_max_average_task_drop_rate(n, m) = rep_max_average_task_drop_rate(n, m) + rep_max_percentage;
 
 
                 %% TRUE
@@ -416,8 +416,8 @@ for sim_count=1:number_of_simulations
                 
                 RTAR_average_total_costs(n, m) = RTAR_average_total_costs(n, m) + RTAR_current_total_cost;
                 RTAR_H_average_total_costs(n, m) = RTAR_H_average_total_costs(n, m) + RTAR_H_current_total_cost;
-                %RepMax_average_total_costs(n, m) = RepMax_average_total_costs(n, m) + RepMax_current_total_cost;
-                %rep_kw_average_total_costs(n, m) = rep_kw_average_total_costs(n, m) + rep_kw_current_total_cost;
+                RepMax_average_total_costs(n, m) = RepMax_average_total_costs(n, m) + RepMax_current_total_cost;
+                rep_kw_average_total_costs(n, m) = rep_kw_average_total_costs(n, m) + rep_kw_current_total_cost;
                 
                 RTAR_percentages_average(n, m) = RTAR_percentages_average(n, m) + RTAR_optimal_val;
                 RTAR_H_percentages_average(n, m) = RTAR_H_percentages_average(n, m) + RTAR_optimal_val;
@@ -442,10 +442,11 @@ RTAR_H_average_task_drop_rate = RTAR_H_average_task_drop_rate ./ number_of_simul
 
 RTAR_average_total_costs = RTAR_average_total_costs ./ number_of_simulations;
 RTAR_H_average_total_costs = RTAR_H_average_total_costs ./ number_of_simulations;
-%RepMax_average_total_costs = RepMax_average_total_costs ./ number_of_simulations;
+RepMax_average_total_costs = RepMax_average_total_costs ./ number_of_simulations;
+rep_kw_average_total_costs = rep_kw_average_total_costs ./ number_of_simulations;
 
-%RepMax_average_num_replicas = RepMax_average_num_replicas ./ number_of_simulations;
-%rep_kw_average_num_replicas = rep_kw_average_num_replicas ./ number_of_simulations;
+RepMax_average_num_replicas = RepMax_average_num_replicas ./ number_of_simulations;
+rep_kw_average_num_replicas = rep_kw_average_num_replicas ./ number_of_simulations;
 RTAR_average_num_replicas = RTAR_average_num_replicas ./ number_of_simulations;
 RTAR_H_average_num_replicas = RTAR_H_average_num_replicas ./ number_of_simulations;
 %sort columns
@@ -481,8 +482,8 @@ true_plot = '';
 if (N >= M)
     for n = 1:N
         current_n = n_vector(n);
-        %repMax_plot = strcat(repMax_plot, '(', num2str(current_n),', ', num2str(rep_max_average_task_drop_rate(n, 1)), ')');
-        %rep_kw_plot = strcat(rep_kw_plot, '(', num2str(current_n),', ', num2str(rep_kw_average_task_drop_rate(n, 1)), ')');
+        repMax_plot = strcat(repMax_plot, '(', num2str(current_n),', ', num2str(rep_max_average_task_drop_rate(n, 1)), ')');
+        rep_kw_plot = strcat(rep_kw_plot, '(', num2str(current_n),', ', num2str(rep_kw_average_task_drop_rate(n, 1)), ')');
         if (enable_true_benchmark)
             true_plot = strcat(true_plot, '(', num2str(current_n),', ', num2str(true_average_task_drop_rate(n, 1)), ')');
         end
@@ -492,8 +493,8 @@ if (N >= M)
 else
     for m = 1:M
         current_m = m_vector(n);
-        %repMax_plot = strcat(repMax_plot, '(', num2str(current_m),', ', num2str(rep_max_average_task_drop_rate(1, m)), ')');
-        %rep_kw_plot = strcat(rep_kw_plot, '(', num2str(current_m),', ', num2str(rep_kw_average_task_drop_rate(1, m)), ')');
+        repMax_plot = strcat(repMax_plot, '(', num2str(current_m),', ', num2str(rep_max_average_task_drop_rate(1, m)), ')');
+        rep_kw_plot = strcat(rep_kw_plot, '(', num2str(current_m),', ', num2str(rep_kw_average_task_drop_rate(1, m)), ')');
         if (enable_true_benchmark)
             true_plot = strcat(true_plot, '(', num2str(current_m),', ', num2str(true_average_task_drop_rate(1, m)), ')');
         end
@@ -509,11 +510,11 @@ disp('RTAR MCMF Plot: ');
 disp(RTAR_H_plot);
 disp('-------------------------------------------------------');
 
-% disp('RepMax Plot: ');
-% disp(repMax_plot);
-% disp('RepKW Plot: ');
-% disp(rep_kw_plot);
-% disp('-------------------------------------------------------');
+disp('RepMax Plot: ');
+disp(repMax_plot);
+disp('RepKW Plot: ');
+disp(rep_kw_plot);
+disp('-------------------------------------------------------');
 if (enable_true_benchmark)
     disp('true_plot Plot: ');
     disp(true_plot);
@@ -529,8 +530,8 @@ true_plot = '';
 if (N >= M)
     for n = 1:N
         current_n = n_vector(n);
-        %repMax_plot = strcat(repMax_plot, '(', num2str(current_n),', ', num2str(RepMax_average_total_costs(n, 1)), ')');
-        %rep_kw_plot = strcat(rep_kw_plot, '(', num2str(current_n),', ', num2str(rep_kw_average_total_costs(n, 1)), ')');
+        repMax_plot = strcat(repMax_plot, '(', num2str(current_n),', ', num2str(RepMax_average_total_costs(n, 1)), ')');
+        rep_kw_plot = strcat(rep_kw_plot, '(', num2str(current_n),', ', num2str(rep_kw_average_total_costs(n, 1)), ')');
         if (enable_true_benchmark)
             true_plot = strcat(true_plot, '(', num2str(current_n),', ', num2str(TRUE_average_total_costs(n, 1)), ')');
         end
@@ -540,8 +541,8 @@ if (N >= M)
 else
     for m = 1:M
         current_m = m_vector(n);
-        %repMax_plot = strcat(repMax_plot, '(', num2str(current_m),', ', num2str(RepMax_average_total_costs(1, m)), ')');
-        %rep_kw_plot = strcat(rep_kw_plot, '(', num2str(current_m),', ', num2str(rep_kw_average_total_costs(1, m)), ')');
+        repMax_plot = strcat(repMax_plot, '(', num2str(current_m),', ', num2str(RepMax_average_total_costs(1, m)), ')');
+        rep_kw_plot = strcat(rep_kw_plot, '(', num2str(current_m),', ', num2str(rep_kw_average_total_costs(1, m)), ')');
         if (enable_true_benchmark)
             true_plot = strcat(true_plot, '(', num2str(current_m),', ', num2str(TRUE_average_total_costs(1, m)), ')');
         end
@@ -557,8 +558,8 @@ disp('RTAR H Plot: ');
 disp(RTAR_H_plot);
 disp('-------------------------------------------------------');
 
-% disp('RepMax Plot: ');
-% disp(repMax_plot);
+disp('RepMax Plot: ');
+disp(repMax_plot);
 disp('-------------------------------------------------------');
 if (enable_true_benchmark)
     disp('true_plot Plot: ');
@@ -576,8 +577,8 @@ true_plot = '';
 if (N >= M)
     for n = 1:N
         current_n = n_vector(n);
-        %repMax_plot = strcat(repMax_plot, '(', num2str(current_n),', ', num2str(RepMax_average_num_replicas(n, 1)), ')');
-        %rep_kw_plot = strcat(rep_kw_plot, '(', num2str(current_n),', ', num2str(rep_kw_average_num_replicas(n, 1)), ')');
+        repMax_plot = strcat(repMax_plot, '(', num2str(current_n),', ', num2str(RepMax_average_num_replicas(n, 1)), ')');
+        rep_kw_plot = strcat(rep_kw_plot, '(', num2str(current_n),', ', num2str(rep_kw_average_num_replicas(n, 1)), ')');
         if (enable_true_benchmark)
             true_plot = strcat(true_plot, '(', num2str(current_n),', ', num2str(true_average_num_replicas(n, 1)), ')');
         end
@@ -587,8 +588,8 @@ if (N >= M)
 else
     for m = 1:M
         current_m = m_vector(n);
-        %repMax_plot = strcat(repMax_plot, '(', num2str(current_m),', ', num2str(RepMax_average_num_replicas(1, m)), ')');
-        %rep_kw_plot = strcat(rep_kw_plot, '(', num2str(current_m),', ', num2str(rep_kw_average_num_replicas(1, m)), ')');
+        repMax_plot = strcat(repMax_plot, '(', num2str(current_m),', ', num2str(RepMax_average_num_replicas(1, m)), ')');
+        rep_kw_plot = strcat(rep_kw_plot, '(', num2str(current_m),', ', num2str(rep_kw_average_num_replicas(1, m)), ')');
         if (enable_true_benchmark)
             true_plot = strcat(true_plot, '(', num2str(current_m),', ', num2str(true_average_num_replicas(1, m)), ')');
         end
@@ -604,8 +605,8 @@ disp('RTAR MCMF Plot: ');
 disp(RTAR_H_plot);
 disp('-------------------------------------------------------');
 
-% disp('RepMax Plot: ');
-% disp(repMax_plot);
+disp('RepMax Plot: ');
+disp(repMax_plot);
 disp('-------------------------------------------------------');
 if (enable_true_benchmark)
     disp('true_plot Plot: ');
