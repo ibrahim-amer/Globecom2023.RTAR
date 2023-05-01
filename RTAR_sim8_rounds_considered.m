@@ -4,7 +4,7 @@ N_min = 100;
 N_max = 100;
 N_stepSize = 5;
 
-M_min = 50;
+M_min = 20;
 M_max = 50;
 M_stepSize = 5;
 epochs = 10;
