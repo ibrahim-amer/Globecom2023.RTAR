@@ -5,7 +5,7 @@ dataObj = struct();
 dataObj.N = N;
 dataObj.M = M;
 
-dataObj.alpha_for_p_budget = 1000;
+dataObj.alpha_for_p_budget = 800;
 dataObj.numOfVars = dataObj.N * dataObj.M;
 %Communication model parameters
     

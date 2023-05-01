@@ -502,7 +502,7 @@ if (N >= M)
     end
 else
     for m = 1:M
-        current_m = m_vector(n);
+        current_m = m_vector(m);
         repMax_plot = strcat(repMax_plot, '(', num2str(current_m),', ', num2str(rep_max_average_task_drop_rate(1, m)), ')');
         rep_kw_plot = strcat(rep_kw_plot, '(', num2str(current_m),', ', num2str(rep_kw_average_task_drop_rate(1, m)), ')');
         if (enable_true_benchmark)
@@ -550,7 +550,7 @@ if (N >= M)
     end
 else
     for m = 1:M
-        current_m = m_vector(n);
+        current_m = m_vector(m);
         repMax_plot = strcat(repMax_plot, '(', num2str(current_m),', ', num2str(RepMax_average_total_costs(1, m)), ')');
         rep_kw_plot = strcat(rep_kw_plot, '(', num2str(current_m),', ', num2str(rep_kw_average_total_costs(1, m)), ')');
         if (enable_true_benchmark)
@@ -599,7 +599,7 @@ if (N >= M)
     end
 else
     for m = 1:M
-        current_m = m_vector(n);
+        current_m = m_vector(m);
         repMax_plot = strcat(repMax_plot, '(', num2str(current_m),', ', num2str(RepMax_average_num_replicas(1, m)), ')');
         rep_kw_plot = strcat(rep_kw_plot, '(', num2str(current_m),', ', num2str(rep_kw_average_num_replicas(1, m)), ')');
         if (enable_true_benchmark)
