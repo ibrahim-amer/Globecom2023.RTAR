@@ -506,7 +506,7 @@ disp(strcat('###############Average task drop rate', '###############'));
 disp('RTAR Plot: ');
 disp(RTAR_plot);
 disp('-------------------------------------------------------');
-disp('RTAR MCMF Plot: ');
+disp('RTAR H Plot: ');
 disp(RTAR_H_plot);
 disp('-------------------------------------------------------');
 
@@ -560,6 +560,8 @@ disp('-------------------------------------------------------');
 
 disp('RepMax Plot: ');
 disp(repMax_plot);
+disp('RepKW Plot: ');
+disp(rep_kw_plot);
 disp('-------------------------------------------------------');
 if (enable_true_benchmark)
     disp('true_plot Plot: ');
@@ -601,12 +603,14 @@ end%end if else
 disp('RTAR Plot: ');
 disp(RTAR_plot);
 disp('-------------------------------------------------------');
-disp('RTAR MCMF Plot: ');
+disp('RTAR H Plot: ');
 disp(RTAR_H_plot);
 disp('-------------------------------------------------------');
 
 disp('RepMax Plot: ');
 disp(repMax_plot);
+disp('RepKW Plot: ');
+disp(rep_kw_plot);
 disp('-------------------------------------------------------');
 if (enable_true_benchmark)
     disp('true_plot Plot: ');
