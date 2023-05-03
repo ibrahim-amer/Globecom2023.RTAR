@@ -1,7 +1,7 @@
 %% This script renders a graph that compares PBTA, MCMF, RepMax, TRUE, PBTA-REPD and MCMF-REPD while varying the reputation of the workers and the number of tasks.
 %Preparing the data
 N_min = 100;
-N_max = 100;
+N_max = 100
 N_stepSize = 5;
 
 M_min = 20;
@@ -440,7 +440,7 @@ for sim_count=1:number_of_simulations
 end%simulations for loop
  
 %calculate the averages
-%rep_max_average_task_drop_rate = rep_max_average_task_drop_rate ./ number_of_simulations;
+rep_max_average_task_drop_rate = rep_max_average_task_drop_rate ./ number_of_simulations;
 if (enable_true_benchmark)
     true_average_task_drop_rate = true_average_task_drop_rate ./ number_of_simulations;
     TRUE_average_total_costs = TRUE_average_total_costs ./ number_of_simulations;
