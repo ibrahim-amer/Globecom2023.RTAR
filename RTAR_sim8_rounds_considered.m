@@ -11,7 +11,7 @@ epochs = 10;
 
 
 
-number_of_simulations = 1;
+number_of_simulations = 10;
 checkConstraints = true;
 enable_true_benchmark = false;
 N = ceil((N_max - N_min + 1) ./ N_stepSize);

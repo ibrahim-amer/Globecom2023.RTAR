@@ -100,7 +100,7 @@ end
 %Workers hazard rates
 
 dataObj.worker_hazzard_rate_fromval = 0.1;
-dataObj.worker_hazzard_rate_toval = 0.8;
+dataObj.worker_hazzard_rate_toval = 0.7;
 dataObj.workers_hazard_rates = dataObj.worker_hazzard_rate_fromval + (dataObj.worker_hazzard_rate_toval - dataObj.worker_hazzard_rate_fromval) * rand(1, dataObj.N);  % size  = N
 %dataObj.workers_hazard_rates = round(dataObj.workers_hazard_rates);
 
