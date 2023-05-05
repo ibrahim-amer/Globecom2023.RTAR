@@ -503,9 +503,8 @@ if (N >= M)
             repmax_crq = RepMax_average_total_costs(n, 1, h) ./ rep_max_average_task_drop_rate(n, 1, h);
             rtar_crq = RTAR_average_total_costs(n, 1, h) ./ RTAR_average_task_drop_rate(n, 1, h);
             rtar_h_crq = RTAR_H_average_total_costs(n, 1, h) ./ RTAR_H_average_task_drop_rate(n, 1, h);
-            repmax_crq(isnan(repmax_crq)) = 0;
-            rtar_crq(isnan(rtar_crq)) = 0;
-            rtar_h_crq(isnan(rtar_h_crq)) = 0;
+            repmax_crq(isnan(repmax_crq) = 0;
+            repmax_crq(isnan(repmax_crq) = 0;
             repMax_plot = strcat(repMax_plot, '(', num2str(current_n),', ', num2str(repmax_crq), ',',num2str(hazard_rates(h)), ')');
             %rep_kw_plot = strcat(rep_kw_plot, '(', num2str(current_n),', ', num2str(rep_kw_average_task_drop_rate(n, 1, h)), ',',num2str(hazard_rates(h)),')');
             if (enable_true_benchmark)
