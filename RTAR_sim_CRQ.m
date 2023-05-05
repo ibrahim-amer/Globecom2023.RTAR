@@ -519,14 +519,19 @@ else
     for h=1:H
         for m = 1:M
             current_m = m_vector(m);
-            
-            repMax_plot = strcat(repMax_plot, '(', num2str(current_m),', ', num2str(rep_max_average_task_drop_rate(1, m, h)), ',',num2str(hazard_rates(h)),')');
+            repmax_crq = RepMax_average_total_costs(1, m, h) ./ rep_max_average_task_drop_rate(1, m, h);
+            rtar_crq = RTAR_average_total_costs(1, m, h) ./ RTAR_average_task_drop_rate(1, m, h);
+            rtar_h_crq = RTAR_H_average_total_costs(1, m, h) ./ RTAR_H_average_task_drop_rate(1, m, h);
+            repmax_crq(isnan(repmax_crq)) = 0;
+            rtar_crq(isnan(rtar_crq)) = 0;
+            rtar_h_crq(isnan(rtar_h_crq)) = 0;
+            repMax_plot = strcat(repMax_plot, '(', num2str(current_m),', ', num2str(repmax_crq), ',',num2str(hazard_rates(h)),')');
             %rep_kw_plot = strcat(rep_kw_plot, '(', num2str(current_m),', ', num2str(rep_kw_average_task_drop_rate(1, m, h)), ',',num2str(hazard_rates(h)),')');
             if (enable_true_benchmark)
                 true_plot = strcat(true_plot, '(', num2str(current_m),', ', num2str(true_average_task_drop_rate(1, m, h)), ',',num2str(hazard_rates(h)),')');
             end
-            RTAR_plot = strcat(RTAR_plot, '(', num2str(current_m),', ', num2str(RTAR_average_task_drop_rate(1, m, h)), ',',num2str(hazard_rates(h)),')');
-            RTAR_H_plot = strcat(RTAR_H_plot, '(', num2str(current_m),', ', num2str(RTAR_H_average_task_drop_rate(1, m, h)), ',',num2str(hazard_rates(h)),')');
+            RTAR_plot = strcat(RTAR_plot, '(', num2str(current_m),', ', num2str(rtar_crq), ',',num2str(hazard_rates(h)),')');
+            RTAR_H_plot = strcat(RTAR_H_plot, '(', num2str(current_m),', ', num2str(rtar_h_crq), ',',num2str(hazard_rates(h)),')');
         end
     end
 end%end if else
