@@ -43,8 +43,8 @@ def RTAR_H(tasks_prefs, tasks_budgets, workers_recruitment_costs) -> dict:
     workers_recruitment_costs = np.array(workers_recruitment_costs)
     current_tasks_budgets = tasks_budgets.copy()
     available_workers = np.arange(len(workers_recruitment_costs))
-    N = len(workers_recruitment_costs) # number of workers
-    M = len(tasks_budgets) # number of tasks
+    N = workers_recruitment_costs.size # number of workers
+    M = tasks_budgets.size # number of tasks
 
     # initialize the dictionary of tasks assignments to workers
     tasks_assignments = {task: [] for task in tasks_prefs.keys()} 
@@ -92,9 +92,15 @@ def run_RTAR_H(tasks_budgets, workers_recruitment_costs, workers_reputations):
 def run_RTAR_H_vectorized(tasks_budgets, workers_recruitment_costs, workers_reputations):
     #this function prepare the input for RTAR_H method
     #Basically, it creates a dictionary of tasks preferences by sorting the workers based on their reputations
+    tasks_budgets = [tasks_budgets] if np.isscalar(tasks_budgets) else tasks_budgets
+    workers_recruitment_costs = [workers_recruitment_costs] if np.isscalar(workers_recruitment_costs) else workers_recruitment_costs
+    workers_reputations = [workers_reputations] if np.isscalar(workers_reputations) else workers_reputations
 
+    tasks_budgets = np.asarray(tasks_budgets)
+    workers_recruitment_costs = np.asarray(workers_recruitment_costs)
+    workers_reputations = np.asarray(workers_reputations)
     tasks_prefs = {}
-    for task in range(len(tasks_budgets)):
+    for task in range(tasks_budgets.size):
         tasks_prefs[task] = np.argsort(workers_reputations)[::-1]
     matchings = RTAR_H(tasks_prefs, tasks_budgets, workers_recruitment_costs)
     X = convert_matchings_to_vector(matchings, len(workers_recruitment_costs), len(tasks_budgets))

@@ -1,17 +1,17 @@
 %% This script renders a graph that compares PBTA, MCMF, RepMax, TRUE, PBTA-REPD and MCMF-REPD while varying the reputation of the workers and the number of tasks.
 %Preparing the data
-N_min = 100;
-N_max = 100
+N_min = 30;
+N_max = 30
 N_stepSize = 5;
 
-M_min = 20;
-M_max = 50;
-M_stepSize = 5;
+M_min = 5;
+M_max = 15;
+M_stepSize = 2;
 epochs = 10;
 
 
 
-number_of_simulations = 10;
+number_of_simulations = 1;
 checkConstraints = true;
 enable_true_benchmark = false;
 N = ceil((N_max - N_min + 1) ./ N_stepSize);

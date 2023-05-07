@@ -4,14 +4,14 @@ N_min = 10;
 N_max = 10
 N_stepSize = 5;
 
-M_min = 5;
+M_min = 1;
 M_max = 5;
-M_stepSize = 5;
+M_stepSize = 1;
 epochs = 10;
 
 
 
-number_of_simulations = 10;
+number_of_simulations = 1;
 checkConstraints = true;
 enable_true_benchmark = false;
 N = ceil((N_max - N_min + 1) ./ N_stepSize);
