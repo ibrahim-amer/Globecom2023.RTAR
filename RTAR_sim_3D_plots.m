@@ -1,12 +1,12 @@
 %% This script renders a graph that compares PBTA, MCMF, RepMax, TRUE, PBTA-REPD and MCMF-REPD while varying the reputation of the workers and the number of tasks.
 %Preparing the data
-N_min = 100;
-N_max = 100;
+N_min = 30;
+N_max = 30;
 N_stepSize = 5;
 
-M_min = 20;
-M_max = 50;
-M_stepSize = 5;
+M_min = 1;
+M_max = 7;
+M_stepSize = 1;
 epochs = 10;
 
 
@@ -539,7 +539,33 @@ f = figure;
 a1          =   gca;
 a2          =   axes('Parent', f, 'Position', a1.Position);
 
+%hs          =   surf(xz, y, z, 'Parent', a2);
 hs          =   surf(xz, y, z, 'Parent', a2);
+hold on
+xz = rtar3D_plot1.x;
+y = rtar3D_plot1.y;
+z = rtar3D_plot1.z;
+
+[~, hc]     =   contourf(xz, y, z);
+a1          =   gca;
+a2          =   axes('Parent', f, 'Position', a1.Position);
+
+%hs          =   surf(xz, y, z, 'Parent', a2);
+hs          =   surf(xz, y, z, 'Parent', a2);
+hold on
+
+
+xz = rtarH3D_plot1.x;
+y = rtarH3D_plot1.y;
+z = rtarH3D_plot1.z;
+
+[~, hc]     =   contourf(xz, y, z);
+a1          =   gca;
+a2          =   axes('Parent', f, 'Position', a1.Position);
+
+%hs          =   surf(xz, y, z, 'Parent', a2);
+hs          =   surf(xz, y, z, 'Parent', a2);
+hold on
 
 a1.Color    =   'none';
 a2.Color    =   'none';
