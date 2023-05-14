@@ -1,12 +1,12 @@
 %% This script renders a graph that compares PBTA, MCMF, RepMax, TRUE, PBTA-REPD and MCMF-REPD while varying the reputation of the workers and the number of tasks.
 %Preparing the data
-N_min = 100;
-N_max = 100;
+N_min = 30;
+N_max = 30;
 N_stepSize = 5;
 
-M_min = 20;
-M_max = 50;
-M_stepSize = 5;
+M_min = 5;
+M_max = 10;
+M_stepSize = 1;
 epochs = 10;
 
 
@@ -396,6 +396,7 @@ for sim_count=1:number_of_simulations
                 rep_max_status = rep_max_actual_nodes == 0;
                 rep_max_percentage = sum(rep_max_status) ./ current_m;
                 rep_max_wasted_resources = abs(rep_max_actual_nodes - rep_max_replicas) ./ rep_max_replicas;
+                rep_max_wasted_resources(isnan(rep_max_wasted_resources)) = 0;
                 repMax_results.avg_wasted_resources(n, m) = sum(rep_max_wasted_resources, 'all') ./ current_m;
 
                 repMax_results.task_drop_rate(n, m) = repMax_results.task_drop_rate(n, m) + rep_max_percentage;
@@ -408,6 +409,7 @@ for sim_count=1:number_of_simulations
                 rep_kw_status = rep_kw_actual_nodes == 0;
                 rep_kw_percentage = sum(rep_kw_status) ./ current_m;
                 rep_kw_wasted_resources = abs(rep_kw_actual_nodes - rep_kw_replicas) ./ rep_kw_replicas;
+                rep_kw_wasted_resources(isnan(rep_kw_wasted_resources)) = 0;
                 rep_kw_results.avg_wasted_resources(n, m) = sum(rep_kw_wasted_resources, 'all') ./ current_m;
 
                 rep_kw_results.task_drop_rate(n, m) = rep_kw_results.task_drop_rate(n, m) + rep_kw_percentage;
@@ -437,6 +439,7 @@ for sim_count=1:number_of_simulations
                 RTAR_status = RTAR_actual_nodes == 0;
                 RTAR_percentage = sum(RTAR_status) ./ current_m;
                 rtar_wasted_resources = abs(RTAR_actual_nodes - RTAR_replicas) ./ RTAR_replicas;
+                rtar_wasted_resources(isnan(rtar_wasted_resources)) = 0;
                 rtar_results.avg_wasted_resources(n, m) = sum(rtar_wasted_resources, 'all') ./ current_m;
 
 
@@ -451,6 +454,7 @@ for sim_count=1:number_of_simulations
                 RTAR_H_status = RTAR_H_actual_nodes == 0;
                 RTAR_H_percentage = sum(RTAR_H_status) ./ current_m;
                 rtar_h_wasted_resources = abs(RTAR_H_actual_nodes - RTAR_H_replicas) ./ RTAR_H_replicas;
+                rtar_h_wasted_resources(isnan(rtar_h_wasted_resources)) = 0;
                 rtar_h_results.avg_wasted_resources(n, m) = sum(rtar_h_wasted_resources, 'all') ./ current_m;
 
 
