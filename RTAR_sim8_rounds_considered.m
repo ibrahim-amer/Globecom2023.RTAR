@@ -1,12 +1,12 @@
 %% This script renders a graph that compares PBTA, MCMF, RepMax, TRUE, PBTA-REPD and MCMF-REPD while varying the reputation of the workers and the number of tasks.
 %Preparing the data
-N_min = 30;
-N_max = 30;
+N_min = 100;
+N_max = 100;
 N_stepSize = 5;
 
-M_min = 10;
-M_max = 10;
-M_stepSize = 2;
+M_min = 20;
+M_max = 50;
+M_stepSize = 5;
 epochs = 10;
 
 
@@ -719,3 +719,21 @@ else
         RTAR_H_plot = strcat(RTAR_H_plot, '(', num2str(current_m),', ', num2str(rtar_h_results.avg_wasted_resources(1, m)), ')');
     end
 end%end if else
+
+disp('RTAR Plot: ');
+disp(RTAR_plot);
+disp('-------------------------------------------------------');
+disp('RTAR H Plot: ');
+disp(RTAR_H_plot);
+disp('-------------------------------------------------------');
+
+disp('RepMax Plot: ');
+disp(repMax_plot);
+disp('RepKW Plot: ');
+disp(rep_kw_plot);
+disp('-------------------------------------------------------');
+if (enable_true_benchmark)
+    disp('true_plot Plot: ');
+    disp(true_plot);
+end
+
