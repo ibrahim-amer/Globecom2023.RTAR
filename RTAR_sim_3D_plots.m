@@ -5,7 +5,7 @@ N_max = 30;
 N_stepSize = 5;
 
 M_min = 1;
-M_max = 7;
+M_max = 5;
 M_stepSize = 1;
 epochs = 10;
 
@@ -315,7 +315,7 @@ for h = 1:H
                     rep_kw_x_reshaped = reshape(rep_kw_x, [current_m, current_n]);
                     rep_kw_replicas = sum(rep_kw_x_reshaped, 2);
 
-                    rep_kw_average_num_replicas(n, m) = rep_kw_average_num_replicas(n, m) + sum(rep_kw_replicas);
+                    rep_kw_average_num_replicas(n, m, h) = rep_kw_average_num_replicas(n, m, h) + sum(rep_kw_replicas);
 
                     rep_kw_tasks_workers_costs = rep_kw_x_reshaped .* current_dataObj.workers_fitness_costs;
                     rep_kw_current_total_cost = sum(rep_kw_tasks_workers_costs, 'all');
@@ -377,7 +377,7 @@ for h = 1:H
                     rep_max_status = rep_max_actual_nodes == 0;
                     rep_max_percentage = sum(rep_max_status) ./ current_m;
 
-                    rep_max_average_task_drop_rate(n, m) = rep_max_average_task_drop_rate(n, m) + rep_max_percentage;
+                    rep_max_average_task_drop_rate(n, m, h) = rep_max_average_task_drop_rate(n, m) + rep_max_percentage;
 
                     %% Rep-KW
                     rep_kw_tasks_fail_prob = failed_nodes_global;
@@ -387,7 +387,7 @@ for h = 1:H
                     rep_kw_status = rep_kw_actual_nodes == 0;
                     rep_kw_percentage = sum(rep_kw_status) ./ current_m;
 
-                    rep_kw_average_task_drop_rate(n, m) = rep_kw_average_task_drop_rate(n, m) + rep_kw_percentage;
+                    rep_kw_average_task_drop_rate(n, m, h) = rep_kw_average_task_drop_rate(n, m, h) + rep_kw_percentage;
 
 
                     %% TRUE
@@ -415,7 +415,7 @@ for h = 1:H
                     RTAR_percentage = sum(RTAR_status) ./ current_m;
 
 
-                    RTAR_average_task_drop_rate(n, m) = RTAR_average_task_drop_rate(n, m) + RTAR_percentage;
+                    RTAR_average_task_drop_rate(n, m, h) = RTAR_average_task_drop_rate(n, m, h) + RTAR_percentage;
 
 
                     %%RTAR H
@@ -427,18 +427,18 @@ for h = 1:H
                     RTAR_H_percentage = sum(RTAR_H_status) ./ current_m;
 
 
-                    RTAR_H_average_task_drop_rate(n, m) = RTAR_H_average_task_drop_rate(n, m) + RTAR_H_percentage;    
+                    RTAR_H_average_task_drop_rate(n, m, h) = RTAR_H_average_task_drop_rate(n, m, h) + RTAR_H_percentage;    
 
 
 
 
-                    RTAR_average_total_costs(n, m) = RTAR_average_total_costs(n, m) + RTAR_current_total_cost;
-                    RTAR_H_average_total_costs(n, m) = RTAR_H_average_total_costs(n, m) + RTAR_H_current_total_cost;
-                    RepMax_average_total_costs(n, m) = RepMax_average_total_costs(n, m) + RepMax_current_total_cost;
-                    rep_kw_average_total_costs(n, m) = rep_kw_average_total_costs(n, m) + rep_kw_current_total_cost;
+                    RTAR_average_total_costs(n, m, h) = RTAR_average_total_costs(n, m, h) + RTAR_current_total_cost;
+                    RTAR_H_average_total_costs(n, m, h) = RTAR_H_average_total_costs(n, m, h) + RTAR_H_current_total_cost;
+                    RepMax_average_total_costs(n, m, h) = RepMax_average_total_costs(n, m, h) + RepMax_current_total_cost;
+                    rep_kw_average_total_costs(n, m, h) = rep_kw_average_total_costs(n, m, h) + rep_kw_current_total_cost;
 
-                    RTAR_percentages_average(n, m) = RTAR_percentages_average(n, m) + RTAR_optimal_val;
-                    RTAR_H_percentages_average(n, m) = RTAR_H_percentages_average(n, m) + RTAR_optimal_val;
+                    RTAR_percentages_average(n, m, h) = RTAR_percentages_average(n, m, h) + RTAR_optimal_val;
+                    RTAR_H_percentages_average(n, m, h) = RTAR_H_percentages_average(n, m, h) + RTAR_optimal_val;
                 catch ex
                     disp('error occured!');
                     rethrow(ex)
@@ -536,24 +536,53 @@ y = repMax3D_plot1.y;
 z = repMax3D_plot1.z;
 f = figure;
 [~, hc]     =   contourf(xz, y, z);
-a1          =   gca;
+a1          =   gca;%gets the current axis  
 a2          =   axes('Parent', f, 'Position', a1.Position);
 
 %hs          =   surf(xz, y, z, 'Parent', a2);
 hs          =   surf(xz, y, z, 'Parent', a2);
-hold on
+%hold on
+a1.Color    =   'none';
+a2.Color    =   'none';
+
+a1.ZLim     =   [0 1];
+a2.ZLim     =   [-Inf Inf];
+
+a1.XTick    =   [];
+a1.YTick    =   [];
+a1.ZTick    =   [];
+
+a1.Box      =   'off';
+a2.Box      =   'off';
+
+% Call after setting desired view on a2 (surf plot)
+a1.View     =   a2.View;
 xz = rtar3D_plot1.x;
 y = rtar3D_plot1.y;
 z = rtar3D_plot1.z;
 
 [~, hc]     =   contourf(xz, y, z);
-a1          =   gca;
+a1          =   gca;%gets the current axis
 a2          =   axes('Parent', f, 'Position', a1.Position);
 
 %hs          =   surf(xz, y, z, 'Parent', a2);
 hs          =   surf(xz, y, z, 'Parent', a2);
 hold on
+a1.Color    =   'none';
+a2.Color    =   'none';
 
+a1.ZLim     =   [0 1];
+a2.ZLim     =   [-Inf Inf];
+
+a1.XTick    =   [];
+a1.YTick    =   [];
+a1.ZTick    =   [];
+
+a1.Box      =   'off';
+a2.Box      =   'off';
+
+% Call after setting desired view on a2 (surf plot)
+a1.View     =   a2.View;
 
 xz = rtarH3D_plot1.x;
 y = rtarH3D_plot1.y;
@@ -571,7 +600,7 @@ a1.Color    =   'none';
 a2.Color    =   'none';
 
 a1.ZLim     =   [0 1];
-a2.ZLim     =   [-9 9];
+a2.ZLim     =   [-Inf Inf];
 
 a1.XTick    =   [];
 a1.YTick    =   [];
