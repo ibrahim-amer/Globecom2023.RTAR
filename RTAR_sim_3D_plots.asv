@@ -584,7 +584,6 @@ p3 = plot3(x3, y3, z3, '-.x', 'linewidth', 2, 'Color', '#FF0000', 'DisplayName',
 xlabel('Task Assignment Load Ratio');
 ylabel('Failure Rates');
 zlabel('Task Drop Rate');
-title('Task assignment load ratio to task drop rate - plot3');
 
 
 % % Concatenate the plot handles
@@ -608,7 +607,7 @@ surf(x3, y3, z3, 'FaceColor', 'red'); % Surface 3 with blue color
 xlabel('Task Assignment Load Ratio');
 ylabel('Failure Rates');
 zlabel('Task Drop Rate');
-title('Task assignment load ratio to task drop rate - 3D Surface');
+title('Task Assignment Load Rat');
 
 
 % Adjust the view angle for better visibility
@@ -622,70 +621,6 @@ dummy3 = plot(NaN, NaN, 's', 'MarkerFaceColor', 'blue', 'MarkerEdgeColor', 'none
 % Create legend
 legend([dummy1, dummy2, dummy3], 'RTAR', 'RTAR-H', 'RMEE');
 
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CRQ%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-figure;
-x1 = rtar3D_plot2.x;
-y1 = rtar3D_plot2.y;
-z1 = rtar3D_plot2.z;
-
-p1 = plot3(x1, y1, z1, '-^', 'linewidth', 2, 'Color', '#00D327', 'DisplayName', 'RTAR');
-hold on;
-
-
-x2 = rtarH3D_plot2.x;
-y2 = rtarH3D_plot2.y;
-z2 = rtarH3D_plot2.z;
-
-p2 = plot3(x2, y2, z2, '-.x', 'linewidth', 2, 'Color', '#2343C5', 'DisplayName', 'RTAR-H');
-
-
-x3 = repMax3D_plot2.x;
-y3 = repMax3D_plot2.y;
-z3 = repMax3D_plot2.z;
-
-p3 = plot3(x3, y3, z3, '-.x', 'linewidth', 2, 'Color', '#FF0000', 'DisplayName', 'RMEE');
-
-xlabel('Task Requests');
-ylabel('Failure Rates');
-zlabel('CRQ');
-title('CRQ - plot3');
-
-
-% % Concatenate the plot handles
-all_plots = [p1(1); p2(1); p3(1)];
-
-% Create legend
-legend(all_plots, 'RTAR', 'RTAR-H', 'RMEE');
-
-%3D surface 
-% Example data
-
-figure;
-% Plot the surfaces
-hold on;
-surf(x1, y1, z1, 'FaceColor', 'green'); % Surface 1 with red color
-
-surf(x2, y2, z2, 'FaceColor', 'blue'); % Surface 2 with green color
-surf(x3, y3, z3, 'FaceColor', 'red'); % Surface 3 with blue color
-
-% Set labels and title
-xlabel('Task Requests');
-ylabel('Failure Rates');
-zlabel('CRQ');
-title('CRQ - 3D Surface');
-
-
-% Adjust the view angle for better visibility
-view(45, 30);
-
-% Create dummy plots with desired colors for the legend
-dummy1 = plot(NaN, NaN, 's', 'MarkerFaceColor', 'red', 'MarkerEdgeColor', 'none');
-dummy2 = plot(NaN, NaN, 's', 'MarkerFaceColor', 'green', 'MarkerEdgeColor', 'none');
-dummy3 = plot(NaN, NaN, 's', 'MarkerFaceColor', 'blue', 'MarkerEdgeColor', 'none');
-
-% Create legend
-legend([dummy1, dummy2, dummy3], 'RTAR', 'RTAR-H', 'RMEE');
 
 % [xz,y,z] = peaks;
 % xz = repMax3D_plot1.x;

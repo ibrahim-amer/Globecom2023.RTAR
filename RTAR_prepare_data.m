@@ -232,9 +232,15 @@ function [dataObj] = RTAR_prepare_data(dataObj)
         %dataObj.tasks_deadlines = round(dataObj.tasks_deadlines, 2);
     end
     
-    if (~isfield(dataObj, "tasks_budgets"))
+    if (~isfield(dataObj, 'tasks_budgets_fromVal'))
         dataObj.tasks_budgets_fromVal = 10;%was 5
-        dataObj.tasks_budgets_toVal = 100;%was 20
+    end
+    
+    if (~isfield(dataObj, 'tasks_budgets_toVal'))
+        dataObj.tasks_budgets_toVal = 100;%was 5
+    end
+    
+    if (~isfield(dataObj, "tasks_budgets"))
         dataObj.tasks_budgets = dataObj.tasks_budgets_fromVal + (dataObj.tasks_budgets_toVal - dataObj.tasks_budgets_fromVal) * rand(1, dataObj.M);  % size  = M
     end
     
