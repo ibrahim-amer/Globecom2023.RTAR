@@ -499,14 +499,14 @@ function [dataObj] = RTAR_prepare_data(dataObj)
                 idx = i + j;
                 row(idx) = 1;
             end
-            dataObj.con_workers_per_task(j) = row;
+            dataObj.con_workers_per_task(j, :) = row;
         end
         
 
         dataObj.A = [dataObj.A; dataObj.con_workers_per_task];
         dataObj.b = [dataObj.b; ones(dataObj.M, 1) .* dataObj.N];
         dataObj.operators = [dataObj.operators repmat('<', 1, size(dataObj.con_workers_per_task, 1))];
-        dataObj.con_workers_per_task_size = size(dataObj.con_workers_per_task, 1);% N
+        dataObj.con_workers_per_task_size = size(dataObj.con_workers_per_task, 1);% M
         
         dataObj.con_workers_per_task_2 = zeros(dataObj.M, dataObj.numOfVars);
         for j = 1 : dataObj.M
@@ -515,14 +515,14 @@ function [dataObj] = RTAR_prepare_data(dataObj)
                 idx = i + j;
                 row(idx) = -1;
             end
-            dataObj.con_workers_per_task_2(j) = row;
+            dataObj.con_workers_per_task_2(j, :) = row;
         end
         
 
         dataObj.A = [dataObj.A; dataObj.con_workers_per_task_2];
         dataObj.b = [dataObj.b; ones(dataObj.M, 1) .* -1];
         dataObj.operators = [dataObj.operators repmat('<', 1, size(dataObj.con_workers_per_task_2, 1))];
-        dataObj.con_workers_per_task_2_size = size(dataObj.con_d, 1);% N
+        dataObj.con_workers_per_task_2_size = size(dataObj.con_workers_per_task_2, 1);% M
     end
     
     %% Constraint (h) RHS
