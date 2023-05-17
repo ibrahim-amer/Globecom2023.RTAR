@@ -5,8 +5,8 @@ dataObj = struct();
 dataObj.N = N;
 dataObj.M = M;
 
-dataObj.tasks_budgets_fromVal = 300;%was 5
-dataObj.tasks_budgets_toVal = 300;%was 20
+dataObj.tasks_budgets_fromVal = 1000;%was 5
+dataObj.tasks_budgets_toVal = 1000;%was 20
 dataObj.alpha_for_p_budget = 10000;
 dataObj.numOfVars = dataObj.N * dataObj.M;
 %Communication model parameters
