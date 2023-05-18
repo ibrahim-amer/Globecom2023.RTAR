@@ -1,12 +1,12 @@
 %% This script renders a graph that compares PBTA, MCMF, RepMax, TRUE, PBTA-REPD and MCMF-REPD while varying the reputation of the workers and the number of tasks.
 %Preparing the data
-N_min = 100;
-N_max = 100;
+N_min = 30;
+N_max = 30;
 N_stepSize = 5;
 
-M_min = 20;
-M_max = 50;
-M_stepSize = 5;
+M_min = 1;
+M_max = 5;
+M_stepSize = 1;
 epochs = 10;
 
 
@@ -599,9 +599,11 @@ legend(all_plots, 'RTAR', 'RTAR-H', 'RMEE');
 figure;
 % Plot the surfaces
 hold on;
-surf(x1, y1, z1, 'FaceColor', 'green'); % Surface 1 with green color
-surf(x2, y2, z2, 'FaceColor', 'blue'); % Surface 2 with blue color
-surf(x3, y3, z3, 'FaceColor', 'red'); % Surface 3 with red color
+surf(x1, y1, z1, 'FaceColor', 'green'); % Surface 1 with red color
+
+surf(x2, y2, z2, 'FaceColor', 'blue'); % Surface 2 with green color
+surf(x3, y3, z3, 'FaceColor', 'red'); % Surface 3 with blue color
+
 % Set labels and title
 xlabel('Task Assignment Load Ratio');
 ylabel('Failure Rates');
@@ -662,9 +664,17 @@ legend(all_plots, 'RTAR', 'RTAR-H', 'RMEE');
 figure;
 % Plot the surfaces
 hold on;
-surf(x1, y1, z1, 'FaceColor', 'green'); % Surface 1 with green color
-surf(x2, y2, z2, 'FaceColor', 'blue'); % Surface 2 with blue color
-surf(x3, y3, z3, 'FaceColor', 'red'); % Surface 3 with red color
+surf(interp2(x1, y1, z1), 'FaceColor', 'green'); % Surface 1 with green color
+surf(interp2(x2, y2, z2), 'FaceColor', 'blue'); % Surface 2 with blue color
+surf(interp2(x3, y3, z3, 'FaceColor', 'red'); % Surface 3 with red color
+% Get handles to the surface objects
+hObj = findobj(gca, 'Type', 'surface');
+% Smooth the surfaces
+smoothness = 3; % Adjust the smoothness level as desired
+shading interp;
+for i = 1:numel(hObj)
+    hObj(i).ZData = smooth3(hObj(i).ZData, 'box', smoothness);
+end
 
 % Set labels and title
 xlabel('Task Requests');

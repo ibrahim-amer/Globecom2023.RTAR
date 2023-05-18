@@ -25,7 +25,7 @@ function [dataObj] = RTAR_prepare_data(dataObj)
         dataObj.con_g_enabled = true;
     end
     if (~isfield(dataObj, 'con_workers_per_task_enabled'))
-        dataObj.con_workers_per_task_enabled = true;
+        dataObj.con_workers_per_task_enabled = false;
     end
     if (~isfield(dataObj, 'MCMF_constraints_enabled'))
         dataObj.MCMF_constraints_enabled = true;
