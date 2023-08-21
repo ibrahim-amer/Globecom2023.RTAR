@@ -15,6 +15,7 @@ dataObj.trans_power = 50 * 1e-3; %50 mWatt;
 dataObj.path_loss_exp = 2;
 dataObj.sigma_sq = 1e-11;
 dataObj.controller_bandwidth = 10e6;
+dataObj.bandwidth_per_worker = dataObj.controller_bandwidth ./ dataObj.N;
 
 %Reliablity level threshold
 
@@ -87,6 +88,27 @@ dataObj.delay_dividend = 1;
 dataObj.rel_epsilon = 0.8;
 dataObj.replicas_per_task = 3;
 dataObj.workers_costs_fromval = 0.5;
+
+%Computation delays
+tasks_specs = dataObj.tasks_pdensity .* dataObj.tasks_dataSize; % vectorSize = M
+dataObj.tasks_comp_delays = zeros(1, dataObj.numOfVars);
+ctr = 1;
+for i=1:dataObj.N
+    dataObj.tasks_comp_delays(ctr:ctr+dataObj.M - 1) = tasks_specs ./ dataObj.workers_freqs(i);
+    ctr = ctr + dataObj.M;
+end
+dataObj.workers_channel_gain = (dataObj.workers_distances .^ -dataObj.path_loss_exp) .* dataObj.workers_rayleigh;
+%SNR
+dataObj.SNR = (dataObj.trans_power .* dataObj.workers_channel_gain) ./ dataObj.sigma_sq;
+%Data rate
+dataObj.workers_data_rates = dataObj.bandwidth_per_worker .* log2(1 + dataObj.SNR); 
+%Communication delays
+dataObj.tasks_comm_delays = zeros(1, dataObj.numOfVars);
+ctr = 1;
+for i=1:dataObj.N
+    dataObj.tasks_comm_delays(ctr:ctr+dataObj.M - 1) = (dataObj.tasks_dataSize ./ dataObj.workers_data_rates(i));
+    ctr = ctr + dataObj.M;
+end
 
 %%Workers costs
 dataObj.workers_costs_toval = 2;

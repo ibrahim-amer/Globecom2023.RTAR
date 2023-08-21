@@ -1,12 +1,12 @@
 %% This script renders a graph that compares PBTA, MCMF, RepMax, TRUE, PBTA-REPD and MCMF-REPD while varying the reputation of the workers and the number of tasks.
 %Preparing the data
-N_min = 100;
-N_max = 100;
+N_min = 20;
+N_max = 20;
 N_stepSize = 5;
 
-M_min = 20;
-M_max = 50;
-M_stepSize = 5;
+M_min = 5;
+M_max = 10;
+M_stepSize = 1;
 epochs = 10;
 
 
@@ -22,7 +22,7 @@ m_vector = M_min:M_stepSize:M_max;
 failure_percentage = 0.5;
  
 
-hazard_rates = 0.5:0.1:1;
+hazard_rates = 0.4:0.2:1;
 H = length(hazard_rates);
 all_results = cell(N, M, H);
 for h=1:H
