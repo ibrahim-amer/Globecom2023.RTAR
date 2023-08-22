@@ -54,7 +54,7 @@ end
             
             
             for sim = 1:number_of_simulations
-                simulation.all_sims{sim}.optimal_solution = RTAR_ILP_solution_Gurobi(temp_dataObj, checkConstraints, allow_debug);                disp('RepMax_Rep_KW_scheme finished!');
+                simulation.all_sims{sim}.optimal_solution = RTAR_ILP_solution_Gurobi(temp_dataObj, checkConstraints, allow_debug);
                 simulation.stats.total_number_of_allocated_workers = simulation.all_sims{sim}.optimal_solution.stats.total_number_of_allocated_workers;
                 if (strcmp(simulation.all_sims{sim}.optimal_solution.status, 'OPTIMAL') || strcmp(simulation.all_sims{sim}.optimal_solution.status, 'INTERRUPTED'))
                     simulation.stats.averageOptimalVal = simulation.stats.averageOptimalVal + simulation.all_sims{sim}.optimal_solution.optimalVal;
