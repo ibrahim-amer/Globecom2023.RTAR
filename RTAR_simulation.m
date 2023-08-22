@@ -65,7 +65,7 @@ end
                 end
                  if (dataObj.run_heuristic)
                     simulation.all_sims{sim}.RTAR_H = struct();
-                    simulation.all_sims{sim}.RTAR_H.X = heuristic_py(temp_dataObj);
+                    simulation.all_sims{sim}.RTAR_H.X = RTAR_heuristic_py(temp_dataObj);
                     simulation.all_sims{sim}.RTAR_H.X = double(simulation.all_sims{sim}.RTAR_H.X)';
                  end
             end

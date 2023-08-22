@@ -25,9 +25,10 @@ function [dataObj] = RTAR_slice_data(N, M, dataObj)
     dataObj.tasks_pdensity = dataObj.tasks_pdensity(:, 1:M);
     dataObj.tasks_dataSize = dataObj.tasks_dataSize(:, 1:M);
     dataObj.tasks_comp_delays = dataObj.tasks_comp_delays(:, 1:dataObj.numOfVars);
-    
+    dataObj.tasks_comm_delays = dataObj.tasks_comm_delays(:, 1:dataObj.numOfVars);
     dataObj.tasks_execution_times = dataObj.tasks_execution_times(:, 1:dataObj.numOfVars);
     dataObj.tasks_priorities = dataObj.tasks_priorities(:, 1:M);
+    dataObj.tasks_budgets = dataObj.tasks_budgets(1:M);
     
     dataObj.tasks_deadlines = dataObj.tasks_deadlines(:, 1:M);
     if (isfield(dataObj, 'comp_energies'))

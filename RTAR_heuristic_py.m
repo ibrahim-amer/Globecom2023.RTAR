@@ -1,4 +1,4 @@
-function [result] = heuristic_py(dataObj)
+function [result] = RTAR_heuristic_py(dataObj)
 dataObj.rel_prop_t = [];
 dataObj.worker_fitness_fn = [];
 %Clear all anonymous functions before calling python function

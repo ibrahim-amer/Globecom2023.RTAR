@@ -252,6 +252,7 @@ function [dataObj] = RTAR_prepare_data(dataObj)
     end
     
     %Computation delays
+    tasks_specs = dataObj.tasks_pdensity .* dataObj.tasks_dataSize; % vectorSize = M
     if (~isfield(dataObj, 'tasks_comp_delays'))
         
         dataObj.tasks_comp_delays = zeros(1, dataObj.numOfVars);
@@ -261,7 +262,7 @@ function [dataObj] = RTAR_prepare_data(dataObj)
             ctr = ctr + dataObj.M;
         end
     end
-    tasks_specs = dataObj.tasks_pdensity .* dataObj.tasks_dataSize; % vectorSize = M
+    
     %Communication delays
     if (~isfield(dataObj, 'tasks_comm_delays'))
         dataObj.tasks_comm_delays = zeros(1, dataObj.numOfVars);
