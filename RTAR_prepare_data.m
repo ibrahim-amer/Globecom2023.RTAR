@@ -253,36 +253,32 @@ function [dataObj] = RTAR_prepare_data(dataObj)
     
     %Computation delays
     tasks_specs = dataObj.tasks_pdensity .* dataObj.tasks_dataSize; % vectorSize = M
-    if (~isfield(dataObj, 'tasks_comp_delays'))
         
-        dataObj.tasks_comp_delays = zeros(1, dataObj.numOfVars);
-        ctr = 1;
-        for i=1:dataObj.N
-            dataObj.tasks_comp_delays(ctr:ctr+dataObj.M - 1) = tasks_specs ./ dataObj.workers_freqs(i);
-            ctr = ctr + dataObj.M;
-        end
+    dataObj.tasks_comp_delays = zeros(1, dataObj.numOfVars);
+    ctr = 1;
+    for i=1:dataObj.N
+        dataObj.tasks_comp_delays(ctr:ctr+dataObj.M - 1) = tasks_specs ./ dataObj.workers_freqs(i);
+        ctr = ctr + dataObj.M;
     end
     
     %Communication delays
-    if (~isfield(dataObj, 'tasks_comm_delays'))
-        dataObj.tasks_comm_delays = zeros(1, dataObj.numOfVars);
-        ctr = 1;
-        for i=1:dataObj.N
-            dataObj.tasks_comm_delays(ctr:ctr+dataObj.M - 1) = (dataObj.tasks_dataSize ./ dataObj.workers_data_rates(i));
-            ctr = ctr + dataObj.M;
-        end
+
+    dataObj.tasks_comm_delays = zeros(1, dataObj.numOfVars);
+    ctr = 1;
+    for i=1:dataObj.N
+        dataObj.tasks_comm_delays(ctr:ctr+dataObj.M - 1) = (dataObj.tasks_dataSize ./ dataObj.workers_data_rates(i));
+        ctr = ctr + dataObj.M;
     end
     
     dataObj.tasks_total_delays = (dataObj.tasks_comp_delays + dataObj.tasks_comm_delays) / dataObj.delay_dividend;
     
     %Task execution time on a worker given their utilization
-    if (~isfield(dataObj, "tasks_execution_times"))
-        dataObj.tasks_execution_times = zeros(1, dataObj.numOfVars);
-        ctr = 1;
-        for i = 1:dataObj.N
-            dataObj.tasks_execution_times(ctr:ctr+dataObj.M - 1) = tasks_specs ./ dataObj.workers_freqs(i) .* dataObj.workers_utilization(i);
-            ctr = ctr + dataObj.M;
-        end
+    
+    dataObj.tasks_execution_times = zeros(1, dataObj.numOfVars);
+    ctr = 1;
+    for i = 1:dataObj.N
+        dataObj.tasks_execution_times(ctr:ctr+dataObj.M - 1) = tasks_specs ./ dataObj.workers_freqs(i) .* dataObj.workers_utilization(i);
+        ctr = ctr + dataObj.M;
     end
     
     %Tasks priorities
